@@ -27,7 +27,7 @@ module.exports = async ():Promise<PostPredictable[]> => {
 			if ('via' in post) {
 				datemap.set(post, DateTime.fromISO(post.via.date));
 			} else {
-			datemap.set(post, DateTime.fromISO(post.date));
+				datemap.set(post, DateTime.fromISO(post.date));
 			}
 		}
 

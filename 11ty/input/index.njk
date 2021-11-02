@@ -7,11 +7,11 @@ layout: default
 	{% if (post.image.length > 0) %}
 		<figure class="images-{{post.image.length}}">
 		{% if ('reddit' === post.source) %}
-					<a
-						rel="noopener"
-						target="_blank"
-						href="https://www.reddit.com/{{post.id}}"
-					>
+			<a
+				rel="noopener"
+				target="_blank"
+				href="https://www.reddit.com/{{post.id}}"
+			>
 		{% else %}
 			<a
 				rel="noopener"
@@ -20,24 +20,24 @@ layout: default
 			>
 		{% endif %}
 		{% for image in post.image %}
-					<picture
-						style="background-image:url({{[post, image] | localImagePrefix}}-16x16.jpg)"
+				<picture
+					style="background-image:url({{[post, image] | localImagePrefix}}-16x16.jpg)"
+				>
+					<source
+						type="image/webp"
+						srcset="{{[post, image] | localImageSrcsetWebp}}"
 					>
-						<source
-							type="image/webp"
-							srcset="{{[post, image] | localImageSrcsetWebp}}"
-						>
-						<img
-							src="{{[post, image] | localImagePrefix}}-320.jpg"
-							width="{{[post, image] | localImageWidth}}"
-							height="{{[post, image] | localImageHeight}}"
-							srcset="{{[post, image] | localImageSrcsetJpeg}}"
-							loading="lazy"
-							decoding="async"
-						>
-					</picture>
+					<img
+						src="{{[post, image] | localImagePrefix}}-320.jpg"
+						width="{{[post, image] | localImageWidth}}"
+						height="{{[post, image] | localImageHeight}}"
+						srcset="{{[post, image] | localImageSrcsetJpeg}}"
+						loading="lazy"
+						decoding="async"
+					>
+				</picture>
 		{% endfor %}
-				</a>
+			</a>
 			<figcaption>
 	{% endif %}
 				<table>
@@ -68,26 +68,26 @@ layout: default
 							</td>
 						</tr>
 	{% else %}
-					<tr>
-						<th scope="row">Author</th>
-						<td>
-							<a
-								rel="noopener"
-								target="_blank"
-								href="https://twitter.com/{{post.author}}"
-							>@{{post.author}}</a>
-						</td>
-					</tr>
-					<tr>
-						<th scope="row">URL</th>
-						<td>
-							<a
-								rel="noopener"
-								target="_blank"
-								href="https://twitter.com/{{post.author}}/status/{{post.id}}"
-							>{{post | twitterPathSoftWrap}}</a>
-						</td>
-					</tr>
+						<tr>
+							<th scope="row">Author</th>
+							<td>
+								<a
+									rel="noopener"
+									target="_blank"
+									href="https://twitter.com/{{post.author}}"
+								>@{{post.author}}</a>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">URL</th>
+							<td>
+								<a
+									rel="noopener"
+									target="_blank"
+									href="https://twitter.com/{{post.author}}/status/{{post.id}}"
+								>{{post | twitterPathSoftWrap}}</a>
+							</td>
+						</tr>
 	{% endif %}
 						<tr>
 							<th scope="row">Date</th>

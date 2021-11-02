@@ -1,5 +1,6 @@
 import {
-	Post,
+	PostPredictable,
+	PostImage,
 } from '../types';
 
 const {
@@ -24,21 +25,21 @@ const [
 	promisify(existsAsync),
 ];
 
-function meta(post:Post) : {
+function meta(post:PostPredictable, image:PostImage) : {
 	url: string,
 	width: number,
 	height: number,
 } {
 	return require(`${__dirname}/../cache/${post.source}/${
-		createHash('sha256').update(post.image).digest('hex')
+		createHash('sha256').update(image).digest('hex')
 	}.json`);
 }
 
-async function localImageSrcset(post:Post, format:'webp'|'jpg') : Promise<string> {
+async function localImageSrcset(post:PostPredictable, image:PostImage, format:'webp'|'jpg') : Promise<string> {
 	const file = `${post.source}/${
-		createHash('sha256').update(post.image).digest('hex')
+		createHash('sha256').update(image).digest('hex')
 	}`;
-	const {width} = meta(post);
+	const {width} = meta(post, image);
 
 	const srcset:string[] = [];
 
@@ -53,11 +54,11 @@ async function localImageSrcset(post:Post, format:'webp'|'jpg') : Promise<string
 	return srcset.join(', ');
 }
 
-async function localImageDimensions(post) : Promise<[number, number]> {
+async function localImageDimensions(post:PostPredictable, post_image:PostImage) : Promise<[number, number]> {
 	const file = `${post.source}/${
-		createHash('sha256').update(post.image).digest('hex')
+		createHash('sha256').update(post_image).digest('hex')
 	}`;
-	const {width, height} = meta(post);
+	const {width, height} = meta(post, post_image);
 
 	let src:string|undefined;
 
@@ -76,7 +77,7 @@ async function localImageDimensions(post) : Promise<[number, number]> {
 	const imagePool = new ImagePool();
 	const image = imagePool.ingestImage(src);
 
-	const {src_width, src_height} = await image.decoded;
+	const {width:src_width, height:src_height} = (await image.decoded).bitmap;
 
 	await imagePool.close();
 
@@ -98,46 +99,53 @@ module.exports = (e) => {
 
 		return DateTime.fromISO(date).toFormat('MMMM dd, yyyy h:mma');
 	});
-	e.addFilter('localImagePrefix', (post:Post) => {
-		return `/img/${post.source}/${
-			createHash('sha256').update(post.image).digest('hex')
+	e.addFilter('localImagePrefix', (arg:[PostPredictable, PostImage]) => {
+		return `/img/${arg[0].source}/${
+			createHash('sha256').update(arg[1]).digest('hex')
 		}`;
 	});
 	e.addNunjucksAsyncFilter(
 		'localImageWidth',
-		(post:Post, callback:(any, number) => any) : void => {
-			localImageDimensions(post).then((dim) => {
+		(arg:[PostPredictable, PostImage], callback:(any, number) => any) : void => {
+			localImageDimensions(arg[0], arg[1]).then((dim) => {
 				callback(null, dim[0]);
 			});
 		}
 	);
 	e.addNunjucksAsyncFilter(
 		'localImageHeight',
-		(post:Post, callback:(any, number) => any) : void => {
-			localImageDimensions(post).then((dim) => {
+		(arg:[PostPredictable, PostImage], callback:(any, number) => any) : void => {
+			localImageDimensions(arg[0], arg[1]).then((dim) => {
 				callback(null, dim[1]);
 			});
 		}
 	);
 	e.addNunjucksAsyncFilter(
 		'localImageSrcsetWebp',
-		(post:Post, callback:(any, string) => any) : void => {
-			localImageSrcset(post, 'webp').then((src) => {
+		(arg:[PostPredictable, PostImage], callback:(any, string) => any) : void => {
+			localImageSrcset(arg[0], arg[1], 'webp').then((src) => {
 				callback(null, src)
 			});
 		}
 	);
 	e.addNunjucksAsyncFilter(
 		'localImageSrcsetJpeg',
-		(post:Post, callback:(any, string) => any) : void => {
-			localImageSrcset(post, 'jpg').then((src) => {
+		(arg:[PostPredictable, PostImage], callback:(any, string) => any) : void => {
+			localImageSrcset(arg[0], arg[1], 'jpg').then((src) => {
 				callback(null, src)
 			});
 		}
 	);
 
-	e.addFilter('pathSoftWrap', (path:string) : string => {
+	function pathSoftWrap (path:string) : string {
 		return path.replace(/([^\/])\//g, '$1\u200b/');
+	}
+
+	e.addFilter('pathSoftWrap', pathSoftWrap);
+	e.addFilter('twitterPathSoftWrap', (post:PostPredictable) : string => {
+		return pathSoftWrap(
+			`twitter.com/${post.author}/status/${post.id}`
+		);
 	});
 
 	return {

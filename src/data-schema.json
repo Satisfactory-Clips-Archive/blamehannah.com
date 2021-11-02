@@ -9,6 +9,16 @@
         "date"
     ],
     "type": "object",
+	"definitions": {
+		"simple_image": {
+			"type": "string",
+			"pattern": "^https:\/\/.+\\.(jpg|png|webp)$"
+		},
+		"twitter_image": {
+			"type": "string",
+			"pattern": "^https:\/\/pbs\\.twimg\\.com/media\/[^\\?]+\\?format=jpg&name=large"
+		}
+	},
     "properties": {
         "author": {
             "type": "string"
@@ -30,8 +40,21 @@
             "type": "string"
         },
 		"image": {
-			"type": "string",
-			"pattern": "^https:\/\/.+\\.(jpg|png|webp)$"
+			"oneOf": [
+				{"$ref": "#/definitions/simple_image"},
+				{"$ref": "#/definitions/twitter_image"},
+				{
+					"minItems": 1,
+					"type": "array",
+					"uniqueItems": true,
+					"items": {
+						"oneOf": [
+							{"$ref": "#/definitions/simple_image"},
+							{"$ref": "#/definitions/twitter_image"}
+						]
+					}
+				}
+			]
 		},
 		"via": {
 			"type": "object",

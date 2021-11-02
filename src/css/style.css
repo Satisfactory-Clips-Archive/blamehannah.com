@@ -67,12 +67,28 @@ picture
 	background-size: cover ;
 	display: block ;
 	width: 100% ;
+
+	> img
+	{
+		width: 100% ;
+		height: auto ;
+	}
 }
 
 main
 {
 	margin: 0 auto ;
 	max-width: 768px ;
+}
+
+article
+{
+	outline: 1px solid ;
+
+	+ article
+	{
+		margin-top: 2rem ;
+	}
 }
 
 table
@@ -89,4 +105,28 @@ th[scope="row"]:first-child
 	{
 		content: ': ' ;
 	}
+}
+
+a
+{
+	display: block ;
+}
+
+figure:not(.images-1)
+{
+	a
+	{
+		display: flex ;
+		flex-wrap: wrap ;
+
+		picture:not(:first-child)
+		{
+			width: 50% ;
+		}
+	}
+}
+
+figcaption
+{
+	padding: 1em ;
 }

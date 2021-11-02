@@ -1,0 +1,92 @@
+---
+date: Last Modified
+layout: default
+---
+{% for post in posts %}
+	<article>
+	{% if ('image' in post) %}
+		<figure>
+		{% if ('reddit' === post.source) %}
+					<a
+						rel="noopener"
+						target="_blank"
+						href="https://www.reddit.com/{{post.id}}"
+					>
+		{% endif %}
+					<picture
+						style="background-image:url({{post | localImagePrefix}}-16x16.jpg)"
+					>
+						<source
+							type="image/webp"
+							srcset="{{post | localImageSrcsetWebp}}"
+						>
+						<img
+							src="{{post | localImagePrefix}}-320.jpg"
+							width="{{post | localImageWidth}}"
+							height="{{post | localImageHeight}}"
+							srcset="{{post | localImageSrcsetJpeg}}"
+							loading="lazy"
+							decoding="async"
+						>
+					</picture>
+				</a>
+			<figcaption>
+	{% endif %}
+				<table>
+					<tbody>
+						<tr>
+							<th scope="row">Source</th>
+							<td>{{post.source}}</td>
+						</tr>
+	{% if ('reddit' === post.source) %}
+						<tr>
+							<th scope="row">Author</th>
+							<td>
+								<a
+									rel="noopener"
+									target="_blank"
+									href="https://www.reddit.com/user/{{post.author}}"
+								>u/{{post.author}}</a>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">URL</th>
+							<td>
+								<a
+									rel="noopener"
+									target="_blank"
+									href="https://www.reddit.com/{{post.id}}"
+								>{{post.id | pathSoftWrap}}</a>
+							</td>
+						</tr>
+	{% endif %}
+						<tr>
+							<th scope="row">Date</th>
+							<td><time
+								datetime="{{post.date | postDate }}"
+							>{{post.date | postDateHuman }}</time></td>
+						</tr>
+	{% if ('via' in post) %}
+						<tr>
+							<th scope="row">via</th>
+							<td>
+		{% if 'twitter' == post.via.source %}
+								<a
+									rel="noopener"
+									target="_blank"
+									href="https://twitter.com/{{post.via.name}}/status/{{post.via.id}}"
+								>@{{post.via.name}}, <time
+									datetime="{{post.via.date | postDate }}"
+								>{{post.via.date | postDateHuman }}</time></a>
+		{% endif %}
+							</td>
+						</tr>
+	{% endif %}
+					</tbody>
+				</table>
+	{% if ('image' in post) %}
+			</figcaption>
+		</figure>
+	{% endif %}
+	</article>
+{% endfor %}

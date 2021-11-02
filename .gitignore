@@ -1,0 +1,9 @@
+/node_modules/
+/src/**/*.html
+/cache/**/*.png
+/cache/**/*.json
+/tmp/**/*.webp
+/tmp/**/*.jpg
+/tmp/**/*.html
+/tmp/**/*.css
+/dist/

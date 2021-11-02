@@ -1,0 +1,92 @@
+*
+{
+	&,
+	&::before,
+	&::after
+	{
+		box-sizing: border-box ;
+		margin: 0 ;
+		padding: 0 ;
+		font: inherit ;
+		color: inherit ;
+		font-size: 1em ;
+		vertical-align: inherit ;
+	}
+}
+
+html
+{
+	font-size: calc((100vw / 320) * 20) ;
+	font-family: system-ui, sans-serif ;
+
+	@media (prefers-color-scheme: dark)
+	{
+		background: #141414 ;
+		color: #fbedd8 ;
+	}
+
+	@media (min-width: 375px)
+	{
+		font-size: calc((100vw / 375) * 20) ;
+	}
+
+	@media (min-width: 425px)
+	{
+		font-size: calc((100vw / 425) * 20) ;
+	}
+
+	@media (min-width: 768px)
+	{
+		font-size: calc((100vw / 768) * 20) ;
+	}
+
+	@media (min-width: 1024px)
+	{
+		font-size: calc((100vw / 1024) * 20) ;
+	}
+
+	@media (min-width: 1440px)
+	{
+		font-size: calc((100vw / 1440) * 16) ;
+	}
+
+	@media (min-width: 1920px)
+	{
+		font-size: 16px ;
+	}
+}
+
+img
+{
+	display: block ;
+	max-width: 100% ;
+}
+
+picture
+{
+	background-size: cover ;
+	display: block ;
+	width: 100% ;
+}
+
+main
+{
+	margin: 0 auto ;
+	max-width: 768px ;
+}
+
+table
+{
+	vertical-align: top ;
+	text-align: left ;
+}
+
+th[scope="row"]:first-child
+{
+	text-align: right ;
+
+	&::after
+	{
+		content: ': ' ;
+	}
+}

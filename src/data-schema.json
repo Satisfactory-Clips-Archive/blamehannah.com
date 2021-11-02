@@ -1,0 +1,65 @@
+{
+    "$id": "https://blamehannah.com/data-schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "required": [
+        "author",
+        "source",
+        "id",
+        "title",
+        "date"
+    ],
+    "type": "object",
+    "properties": {
+        "author": {
+            "type": "string"
+        },
+        "source": {
+            "enum": [
+                "twitter",
+                "reddit"
+            ],
+            "type": "string"
+        },
+        "id": {
+            "type": "string"
+        },
+        "title": {
+            "type": "string"
+        },
+        "date": {
+            "type": "string"
+        },
+		"image": {
+			"type": "string",
+			"pattern": "^https:\/\/.+\\.(jpg|png|webp)$"
+		},
+		"via": {
+			"type": "object",
+			"required": [
+				"name",
+				"source",
+				"id",
+				"date"
+			],
+			"properties": {
+				"author": {
+					"type": "string"
+				},
+				"source": {
+					"enum": [
+						"twitter",
+						"reddit"
+					],
+					"type": "string"
+				},
+				"id": {
+					"type": "string"
+				},
+				"date": {
+					"type": "string"
+				}
+			}
+		}
+    },
+    "additionalProperties": false
+}

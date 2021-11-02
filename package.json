@@ -1,0 +1,26 @@
+{
+  "scripts": {
+    "build": "gulp sync-images && eleventy && gulp"
+  },
+  "dependencies": {
+    "@11ty/eleventy": "^0.12.1",
+    "@squoosh/lib": "^0.4.0",
+    "@types/luxon": "^2.0.5",
+    "@types/node": "^16.11.6",
+    "ajv": "^8.6.3",
+    "cssnano": "^5.0.8",
+    "glob": "^7.2.0",
+    "gulp": "^4.0.2",
+    "gulp-changed": "^4.0.3",
+    "gulp-cli": "^2.3.0",
+    "gulp-htmlmin": "^5.0.1",
+    "gulp-postcss": "^9.0.1",
+    "luxon": "^2.0.2",
+    "node-fetch": "^3.0.0",
+    "postcss-calc": "^8.0.0",
+    "postcss-import": "^14.0.2",
+    "postcss-nested": "^5.0.6",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.4.4"
+  }
+}

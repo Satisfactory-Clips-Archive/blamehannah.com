@@ -1,14 +1,14 @@
 {
-    "$id": "https://blamehannah.com/data-schema.json",
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "required": [
-        "author",
-        "source",
-        "id",
-        "title",
-        "date"
-    ],
-    "type": "object",
+	"$id": "https://blamehannah.com/data-schema.json",
+	"$schema": "http://json-schema.org/draft-07/schema",
+	"required": [
+		"author",
+		"source",
+		"id",
+		"title",
+		"date"
+	],
+	"type": "object",
 	"definitions": {
 		"simple_image": {
 			"type": "string",
@@ -19,26 +19,26 @@
 			"pattern": "^https:\/\/pbs\\.twimg\\.com/media\/[^\\?]+\\?format=jpg&name=large"
 		}
 	},
-    "properties": {
-        "author": {
-            "type": "string"
-        },
-        "source": {
-            "enum": [
-                "twitter",
-                "reddit"
-            ],
-            "type": "string"
-        },
-        "id": {
-            "type": "string"
-        },
-        "title": {
-            "type": "string"
-        },
-        "date": {
-            "type": "string"
-        },
+	"properties": {
+		"author": {
+			"type": "string"
+		},
+		"source": {
+			"enum": [
+				"twitter",
+				"reddit"
+			],
+			"type": "string"
+		},
+		"id": {
+			"type": "string"
+		},
+		"title": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string"
+		},
 		"image": {
 			"oneOf": [
 				{"$ref": "#/definitions/simple_image"},
@@ -83,6 +83,6 @@
 				}
 			}
 		}
-    },
-    "additionalProperties": false
+	},
+	"additionalProperties": false
 }

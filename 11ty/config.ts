@@ -1,4 +1,5 @@
 import {
+	PostPredictableYouTube,
 	PostPredictable,
 	PostImage,
 } from '../types';
@@ -25,7 +26,7 @@ const [
 	promisify(existsAsync),
 ];
 
-function meta(post:PostPredictable, image:PostImage) : {
+function meta(post:PostPredictable|PostPredictableYouTube, image:PostImage) : {
 	url: string,
 	width: number,
 	height: number,
@@ -35,7 +36,7 @@ function meta(post:PostPredictable, image:PostImage) : {
 	}.json`);
 }
 
-async function localImageSrcset(post:PostPredictable, image:PostImage, format:'webp'|'jpg') : Promise<string> {
+async function localImageSrcset(post:PostPredictable|PostPredictableYouTube, image:PostImage, format:'webp'|'jpg') : Promise<string> {
 	const file = `${post.source}/${
 		createHash('sha256').update(image).digest('hex')
 	}`;
@@ -54,7 +55,7 @@ async function localImageSrcset(post:PostPredictable, image:PostImage, format:'w
 	return srcset.join(', ');
 }
 
-async function localImageDimensions(post:PostPredictable, post_image:PostImage) : Promise<[number, number]> {
+async function localImageDimensions(post:PostPredictable|PostPredictableYouTube, post_image:PostImage) : Promise<[number, number]> {
 	const file = `${post.source}/${
 		createHash('sha256').update(post_image).digest('hex')
 	}`;
@@ -104,6 +105,12 @@ module.exports = (e) => {
 			createHash('sha256').update(arg[1]).digest('hex')
 		}`;
 	});
+	e.addFilter('youtubeImagePrefix', (arg:[PostPredictableYouTube]) => {
+		const hash = createHash('sha256').update(
+			`${arg[0].id}@${arg[0].screenshot_timestamp}`
+		).digest('hex');
+		return `/img/${arg[0].source}/${hash}`;
+	});
 	e.addNunjucksAsyncFilter(
 		'localImageWidth',
 		(arg:[PostPredictable, PostImage], callback:(any, number) => any) : void => {
@@ -121,6 +128,22 @@ module.exports = (e) => {
 		}
 	);
 	e.addNunjucksAsyncFilter(
+		'youtubeImageWidth',
+		(arg:[PostPredictableYouTube], callback:(any, number) => any) : void => {
+			localImageDimensions(arg[0], `${arg[0].id}@${arg[0].screenshot_timestamp}`).then((dim) => {
+				callback(null, dim[0]);
+			});
+		}
+	);
+	e.addNunjucksAsyncFilter(
+		'youtubeImageHeight',
+		(arg:[PostPredictableYouTube], callback:(any, number) => any) : void => {
+			localImageDimensions(arg[0], `${arg[0].id}@${arg[0].screenshot_timestamp}`).then((dim) => {
+				callback(null, dim[1]);
+			});
+		}
+	);
+	e.addNunjucksAsyncFilter(
 		'localImageSrcsetWebp',
 		(arg:[PostPredictable, PostImage], callback:(any, string) => any) : void => {
 			localImageSrcset(arg[0], arg[1], 'webp').then((src) => {
@@ -129,9 +152,25 @@ module.exports = (e) => {
 		}
 	);
 	e.addNunjucksAsyncFilter(
+		'youtubeImageSrcsetWebp',
+		(arg:[PostPredictableYouTube], callback:(any, string) => any) : void => {
+			localImageSrcset(arg[0], `${arg[0].id}@${arg[0].screenshot_timestamp}`, 'webp').then((src) => {
+				callback(null, src)
+			});
+		}
+	);
+	e.addNunjucksAsyncFilter(
 		'localImageSrcsetJpeg',
 		(arg:[PostPredictable, PostImage], callback:(any, string) => any) : void => {
 			localImageSrcset(arg[0], arg[1], 'jpg').then((src) => {
+				callback(null, src)
+			});
+		}
+	);
+	e.addNunjucksAsyncFilter(
+		'youtubeImageSrcsetJpeg',
+		(arg:[PostPredictableYouTube], callback:(any, string) => any) : void => {
+			localImageSrcset(arg[0], `${arg[0].id}@${arg[0].screenshot_timestamp}`, 'jpg').then((src) => {
 				callback(null, src)
 			});
 		}

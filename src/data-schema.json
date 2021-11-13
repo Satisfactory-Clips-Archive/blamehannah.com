@@ -1,15 +1,70 @@
 {
 	"$id": "https://blamehannah.com/data-schema.json",
 	"$schema": "http://json-schema.org/draft-07/schema",
-	"required": [
-		"author",
-		"source",
-		"id",
-		"title",
-		"date"
-	],
 	"type": "object",
 	"definitions": {
+		"source": {
+			"enum": [
+				"twitter",
+				"reddit"
+			],
+			"type": "string"
+		},
+		"via": {
+			"type": "object",
+			"required": [
+				"name",
+				"source",
+				"id",
+				"date"
+			],
+			"properties": {
+				"name": {"$ref": "#/definitions/name"},
+				"source": {
+					"oneOf": [
+						{"$ref": "#/definitions/source"},
+						{
+							"const": "youtube"
+						}
+					]
+				},
+				"id": {"$ref": "#/definitions/id"},
+				"date": {"$ref": "#/definitions/date"}
+			}
+		},
+		"id": {
+			"type": "string"
+		},
+		"date": {
+			"type": "string"
+		},
+		"title": {
+			"type": "string"
+		},
+		"name": {
+			"type": "string"
+		},
+		"url": {
+			"type": "string"
+		},
+		"author": {
+			"oneOf": [
+				{
+					"type": "string"
+				},
+				{
+					"type": "object",
+					"required": [
+						"id",
+						"name"
+					],
+					"properties": {
+						"id": {"type": "string"},
+						"name": {"type": "string"}
+					}
+				}
+			]
+		},
 		"simple_image": {
 			"type": "string",
 			"pattern": "^https:\/\/.+\\.(jpg|png|webp)$"
@@ -19,16 +74,49 @@
 			"pattern": "^https:\/\/pbs\\.twimg\\.com/media\/[^\\?]+\\?format=jpg&name=large"
 		}
 	},
+	"oneOf": [
+		{
+			"type": "object",
+			"required": [
+				"author",
+				"source",
+				"screenshot_timestamp",
+				"id",
+				"title",
+				"date",
+				"via"
+			],
+			"properties": {
+				"author": {"$ref": "#/definitions/author"},
+				"source": {
+					"const": "youtube"
+				},
+				"screenshot_timestamp": {
+					"type": "number"
+				},
+				"id": {"$ref": "#/definitions/id"},
+				"title": {"$ref": "#/definitions/title"},
+				"date": {"$ref": "#/definitions/date"},
+				"via": {"$ref": "#/definitions/via"},
+				"url": {"$ref": "#/definitions/url"}
+			},
+			"additionalProperties": false
+		},
+		{
+			"required": [
+				"author",
+				"source",
+				"id",
+				"title",
+				"date"
+			],
+			"type": "object",
 	"properties": {
 		"author": {
-			"type": "string"
+					"$ref": "#/definitions/author"
 		},
 		"source": {
-			"enum": [
-				"twitter",
-				"reddit"
-			],
-			"type": "string"
+					"$ref": "#/definitions/source"
 		},
 		"id": {
 			"type": "string"
@@ -57,32 +145,10 @@
 			]
 		},
 		"via": {
-			"type": "object",
-			"required": [
-				"name",
-				"source",
-				"id",
-				"date"
-			],
-			"properties": {
-				"author": {
-					"type": "string"
-				},
-				"source": {
-					"enum": [
-						"twitter",
-						"reddit"
-					],
-					"type": "string"
-				},
-				"id": {
-					"type": "string"
-				},
-				"date": {
-					"type": "string"
-				}
-			}
+					"$ref": "#/definitions/via"
 		}
-	},
-	"additionalProperties": false
+			},
+			"additionalProperties": false
+		}
+	]
 }

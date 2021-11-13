@@ -27,6 +27,9 @@ const postcss_plugins = {
 	calc: require('postcss-calc'),
 };
 const cssnano = require('cssnano');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
+const ffmpeg = require('fluent-ffmpeg');
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 const [
 	exists,
@@ -35,6 +38,7 @@ const [
 	promisify(existsAsync),
 	promisify(writeFileAsync),
 ];
+const glob = promisify(require('glob'));
 
 
 task('sync-images', async (cb) => {
@@ -44,11 +48,29 @@ task('sync-images', async (cb) => {
 
 	const imagePool = new ImagePool();
 
-	const posts_with_images = (
+	const posts = (
 		await require('./11ty/data/posts.js')()
+	);
+
+	const posts_with_images = (
+		posts
 	).filter((maybe) => {
-		return maybe.image.length > 0;
+		return 'image' in maybe && maybe.image.length > 0;
 	});
+
+	const posts_with_videos = [];
+
+	for (let maybe of posts) {
+		let video;
+		if (
+			'youtube' === maybe.source
+			&& 'id' in maybe
+			&& /^yt-[^,]+,[^,]*,[^,]*$/.test(maybe.id)
+			&& (video = await glob(`${__dirname}/cache/youtube/satisfactory-clips-archive/${maybe.id}.*`)).length > 0
+		) {
+			posts_with_videos.push([maybe, video[0]]);
+		}
+	}
 
 	for (let post of posts_with_images) {
 		for (let post_image of post.image) {
@@ -85,6 +107,69 @@ task('sync-images', async (cb) => {
 
 			await writeFile(filename, (await image.encodedWith.oxipng).binary);
 		}
+	}
+
+	for (let data of posts_with_videos) {
+		const [post, video] = data;
+		let start = 0;
+
+		if (/^yt-[^,]+,[^,]+,[^,]*$/.test(post.id)) {
+			[, start] = post.id.split(',');
+
+			start = parseFloat(start);
+		}
+
+		const offset_start = post.screenshot_timestamp - start;
+		const hash = createHash('sha256').update(
+			`${post.id}@${post.screenshot_timestamp}`
+		).digest('hex');
+
+		const file = `${__dirname}/cache/youtube/${hash}`;
+		const filename = `${file}.png`;
+		const metafile = `${file}.json`;
+
+		if (await exists(filename) && await exists(metafile)) {
+			continue;
+		}
+
+		console.log(`generating video screenshot of ${post.id}`);
+
+		await new Promise((yup, nope) => {
+			ffmpeg(video).seekInput(offset_start).frames(1).on('end', yup).on('error', nope).on('strderr', nope).on(
+				'progress',
+				(progress) => {
+					console.log(
+						`progress on ${post.id}: ${progress.percent}%`
+					);
+				}
+			).on('start', (cli) => {
+				console.log(cli);
+			}).save(
+				filename
+			);
+		});
+
+		const image = imagePool.ingestImage(filename);
+
+		const meta = await image.decoded;
+
+		await writeFile(metafile, JSON.stringify(
+			{
+				url: filename,
+				width: meta.bitmap.width,
+				height: meta.bitmap.height,
+			},
+			null,
+			'\t'
+		));
+
+		await image.encode({
+			oxipng: {
+				level: 3,
+			}
+		});
+
+		await writeFile(filename, (await image.encodedWith.oxipng).binary);
 	}
 
 	const images = [
@@ -220,13 +305,11 @@ task('sync-images', async (cb) => {
 		],
 	];
 
-	for (let post of posts_with_images) {
-		for (let post_image of post.image) {
-			const hash = createHash('sha256').update(post_image).digest('hex');
-			const file = `${post.source}/${hash}`;
-			const cache_file = `${__dirname}/cache/${file}.png`;
-			const meta = require(`${__dirname}/cache/${file}.json`);
-
+	async function handle_images(
+		file,
+		cache_file,
+		meta
+	) {
 			for (let config of images.filter((rule) => {
 				return rule[0].resize.width <= meta.width;
 			})) {
@@ -291,7 +374,30 @@ task('sync-images', async (cb) => {
 
 				await Promise.all(write);
 			}
+	}
+
+	for (let post of posts_with_images) {
+		for (let post_image of post.image) {
+			const hash = createHash('sha256').update(post_image).digest('hex');
+			const file = `${post.source}/${hash}`;
+			const cache_file = `${__dirname}/cache/${file}.png`;
+			const meta = require(`${__dirname}/cache/${file}.json`);
+
+			handle_images(file, cache_file, meta);
 		}
+	}
+
+	for (let data of posts_with_videos) {
+		const [post] = data;
+		const hash = createHash('sha256').update(
+			`${post.id}@${post.screenshot_timestamp}`
+		).digest('hex');
+
+		const cached_file = `${__dirname}/cache/youtube/${hash}`;
+		const filename = `${cached_file}.png`;
+		const meta = require(`${cached_file}.json`);
+
+		await handle_images(`${post.source}/${hash}`, filename, meta);
 	}
 
 	await imagePool.close();

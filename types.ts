@@ -1,6 +1,6 @@
 export type PostImage = string;
 
-export type PostSource = 'twitter'|'reddit';
+export type PostSource = 'twitter'|'reddit'|'youtube';
 
 export type Sourceable = {
 	source: PostSource,
@@ -19,4 +19,10 @@ export type Post = Sourceable & {
 
 export type PostPredictable = Post & {
 	image: PostImage[]
+};
+
+export type PostPredictableYouTube = Post & {
+	source: 'youtube',
+	url: string,
+	screenshot_timestamp: number,
 };

@@ -2,6 +2,7 @@
 
 ## 2021-11-13
 - fixed line endings
+- adding support for youtube sources
 
 ## 2021-11-02
 - adding better support for twitter

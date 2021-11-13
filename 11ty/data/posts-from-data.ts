@@ -37,7 +37,13 @@ module.exports = async ():Promise<PostPredictable[]> => {
 	return (await posts).filter((maybe):boolean => {
 		const data = require(maybe);
 
-		return data_schema(data);
+		const result = data_schema(data);
+
+		if ( ! result) {
+			throw data_schema.errors;
+		}
+
+		return result;
 	}).map((filename:string) : PostPredictable => {
 		const post = require(filename) as Post;
 

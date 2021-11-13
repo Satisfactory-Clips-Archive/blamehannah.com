@@ -2,6 +2,7 @@
 /src/**/*.html
 /cache/**/*.png
 /cache/**/*.json
+/cache/**/*.mkv
 /tmp/**/*.webp
 /tmp/**/*.jpg
 /tmp/**/*.html

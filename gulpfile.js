@@ -310,70 +310,70 @@ task('sync-images', async (cb) => {
 		cache_file,
 		meta
 	) {
-			for (let config of images.filter((rule) => {
-				return rule[0].resize.width <= meta.width;
-			})) {
-				const [preprocess, encode_rules] = config;
+		for (let config of images.filter((rule) => {
+			return rule[0].resize.width <= meta.width;
+		})) {
+			const [preprocess, encode_rules] = config;
 
-				const resized = `${__dirname}/tmp/img/${file}-${
-					'height' in preprocess.resize
-						? `${preprocess.resize.width}x${preprocess.resize.height}`
-						: `${preprocess.resize.width}`
-					}`;
+			const resized = `${__dirname}/tmp/img/${file}-${
+				'height' in preprocess.resize
+					? `${preprocess.resize.width}x${preprocess.resize.height}`
+					: `${preprocess.resize.width}`
+				}`;
 
-				const encode = {};
+			const encode = {};
 
-				const filenames = {
-					mozjpeg: `${resized}.jpg`,
-					webp: `${resized}.webp`,
-					oxipng: `${resized}.png`,
-				};
+			const filenames = {
+				mozjpeg: `${resized}.jpg`,
+				webp: `${resized}.webp`,
+				oxipng: `${resized}.png`,
+			};
 
-				for (let rule of Object.entries(encode_rules)) {
-					const [codec, codec_rules] = rule;
+			for (let rule of Object.entries(encode_rules)) {
+				const [codec, codec_rules] = rule;
 
-					if ( ! await exists(filenames[codec])) {
-						encode[codec] = codec_rules;
-					}
+				if ( ! await exists(filenames[codec])) {
+					encode[codec] = codec_rules;
 				}
-
-				if (Object.keys(encode).length < 1) {
-					continue;
-				}
-
-				const image = imagePool.ingestImage(cache_file);
-
-				await image.decoded;
-
-				await image.preprocess(preprocess);
-
-				await image.encode(encode);
-
-				const write = [];
-
-				if ('mozjpeg' in image.encodedWith) {
-					write.push(writeFile(
-						filenames.mozjpeg,
-						(await image.encodedWith.mozjpeg).binary
-					));
-				}
-
-				if ('webp' in image.encodedWith) {
-					write.push(writeFile(
-						filenames.webp,
-						(await image.encodedWith.webp).binary
-					));
-				}
-
-				if ('oxipng' in image.encodedWith) {
-					write.push(writeFile(
-						filenames.oxipng,
-						(await image.encodedWith.oxipng).binary
-					));
-				}
-
-				await Promise.all(write);
 			}
+
+			if (Object.keys(encode).length < 1) {
+				continue;
+			}
+
+			const image = imagePool.ingestImage(cache_file);
+
+			await image.decoded;
+
+			await image.preprocess(preprocess);
+
+			await image.encode(encode);
+
+			const write = [];
+
+			if ('mozjpeg' in image.encodedWith) {
+				write.push(writeFile(
+					filenames.mozjpeg,
+					(await image.encodedWith.mozjpeg).binary
+				));
+			}
+
+			if ('webp' in image.encodedWith) {
+				write.push(writeFile(
+					filenames.webp,
+					(await image.encodedWith.webp).binary
+				));
+			}
+
+			if ('oxipng' in image.encodedWith) {
+				write.push(writeFile(
+					filenames.oxipng,
+					(await image.encodedWith.oxipng).binary
+				));
+			}
+
+			await Promise.all(write);
+		}
 	}
 
 	for (let post of posts_with_images) {

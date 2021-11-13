@@ -111,42 +111,42 @@
 				"date"
 			],
 			"type": "object",
-	"properties": {
-		"author": {
+			"properties": {
+				"author": {
 					"$ref": "#/definitions/author"
-		},
-		"source": {
+				},
+				"source": {
 					"$ref": "#/definitions/source"
-		},
-		"id": {
-			"type": "string"
-		},
-		"title": {
-			"type": "string"
-		},
-		"date": {
-			"type": "string"
-		},
-		"image": {
-			"oneOf": [
-				{"$ref": "#/definitions/simple_image"},
-				{"$ref": "#/definitions/twitter_image"},
-				{
-					"minItems": 1,
-					"type": "array",
-					"uniqueItems": true,
-					"items": {
-						"oneOf": [
-							{"$ref": "#/definitions/simple_image"},
-							{"$ref": "#/definitions/twitter_image"}
-						]
-					}
-				}
-			]
-		},
-		"via": {
+				},
+				"id": {
+					"type": "string"
+				},
+				"title": {
+					"type": "string"
+				},
+				"date": {
+					"type": "string"
+				},
+				"image": {
+					"oneOf": [
+						{"$ref": "#/definitions/simple_image"},
+						{"$ref": "#/definitions/twitter_image"},
+						{
+							"minItems": 1,
+							"type": "array",
+							"uniqueItems": true,
+							"items": {
+								"oneOf": [
+									{"$ref": "#/definitions/simple_image"},
+									{"$ref": "#/definitions/twitter_image"}
+								]
+							}
+						}
+					]
+				},
+				"via": {
 					"$ref": "#/definitions/via"
-		}
+				}
 			},
 			"additionalProperties": false
 		}

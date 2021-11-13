@@ -1,5 +1,8 @@
 # changelog
 
+## 2021-11-13
+- fixed line endings
+
 ## 2021-11-02
 - adding better support for twitter
 - adding support for multi-image sources

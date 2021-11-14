@@ -91,15 +91,23 @@ article
 	}
 }
 
+* + p
+{
+	margin-top: 1rem ;
+}
+
 table
 {
 	vertical-align: top ;
 	text-align: left ;
+	table-layout: fixed ;
+	width: 100% ;
 }
 
 th[scope="row"]:first-child
 {
 	text-align: right ;
+	width: 4rem ;
 
 	&::after
 	{
@@ -110,6 +118,8 @@ th[scope="row"]:first-child
 a
 {
 	display: block ;
+	text-overflow: ellipsis ;
+	overflow: hidden ;
 }
 
 figure:not(.images-1)
@@ -126,6 +136,12 @@ figure:not(.images-1)
 	}
 }
 
+blockquote,
+footer
+{
+	padding: 1rem ;
+}
+
 figcaption
 {
 	padding: 1em ;
@@ -139,8 +155,7 @@ body > footer
     flex-direction: column ;
     justify-content: center ;
     align-items: center ;
-    font-size: 4vmin ;
-	cursor: s-resize ;
+    font-size: 4vmax ;
 
 	> figure
 	{
@@ -152,7 +167,7 @@ body > footer
 		{
 			a
 			{
-				display: inline-block ;
+				display: inline ;
 			}
 		}
 
@@ -163,12 +178,17 @@ body > footer
 	}
 }
 
+body > header
+{
+	cursor: s-resize ;
+}
+
 body > footer
 {
 	font-size: 1rem ;
 
 	a
 	{
-		display: inline-block ;
+		display: inline ;
 	}
 }

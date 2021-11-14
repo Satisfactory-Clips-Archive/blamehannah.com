@@ -97,6 +97,7 @@
 				"author",
 				"source",
 				"screenshot_timestamp",
+				"alt",
 				"id",
 				"title",
 				"date",
@@ -110,6 +111,7 @@
 				"screenshot_timestamp": {
 					"type": "number"
 				},
+				"alt": {"type": "string"},
 				"id": {"$ref": "#/definitions/id"},
 				"title": {"$ref": "#/definitions/title"},
 				"date": {"$ref": "#/definitions/date"},

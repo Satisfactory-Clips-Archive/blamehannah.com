@@ -9,4 +9,6 @@
 /tmp/**/*.jpg
 /tmp/**/*.html
 /tmp/**/*.css
+/tmp/**/*.json
+/tmp/**/*.br
 /dist/

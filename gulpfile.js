@@ -27,6 +27,8 @@ const postcss_plugins = {
 	calc: require('postcss-calc'),
 };
 const cssnano = require('cssnano');
+const newer = require('gulp-newer');
+const brotli = require('gulp-brotli');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -440,8 +442,32 @@ task('css', () => {
 	)
 });
 
+task('sync-schema', () => {
+	return src('./src/data-schema.json').pipe(changed(
+		'./tmp',
+		{
+			hasChanged: changed.compareContents,
+		}
+	)).pipe(dest('./tmp/'));
+});
+
+task('brotli', () => {
+	return src('./tmp/**/*.{css,html,json}').pipe(
+		newer({
+			dest: './tmp/',
+			ext: '.br',
+		})
+	).pipe(
+		brotli.compress({
+			quality: 11,
+		})
+	).pipe(
+		dest('./tmp/')
+	);
+});
+
 task('sync', () => {
-	return src('./tmp/**/*.{html,png,webp,jpg,json,css}').pipe(
+	return src('./tmp/**/*.{html,png,webp,jpg,json,css,br}').pipe(
 		changed(
 			'./dist/',
 			{
@@ -454,9 +480,12 @@ task('sync', () => {
 });
 
 task('default', series(...[
+	'sync-images',
 	parallel(...[
+		'sync-schema',
 		'css',
 	]),
 	'html',
+	'brotli',
 	'sync',
 ]));

@@ -197,7 +197,7 @@ module.exports = (e) => {
 		) : string => {
 			const [post, image] = arg;
 
-				return image.alt;
+			return image.alt;
 		}
 	);
 

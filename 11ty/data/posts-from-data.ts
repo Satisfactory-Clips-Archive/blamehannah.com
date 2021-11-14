@@ -53,7 +53,7 @@ module.exports = async ():Promise<PostPredictable[]> => {
 		if ('image' in post) {
 			const image:PostImageComplex[] = post.image;
 
-				post.image = image;
+			post.image = image;
 		} else {
 			post.image = [] as PostImageComplex[];
 		}

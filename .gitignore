@@ -3,6 +3,8 @@
 /cache/**/*.png
 /cache/**/*.json
 /cache/**/*.mkv
+/cache/**/*.mp4
+/cache/**/*.webm
 /tmp/**/*.webp
 /tmp/**/*.jpg
 /tmp/**/*.html

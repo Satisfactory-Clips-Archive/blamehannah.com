@@ -442,8 +442,11 @@ task('css', () => {
 	)
 });
 
-task('sync-schema', () => {
-	return src('./src/data-schema.json').pipe(changed(
+task('sync-src', () => {
+	return src([
+		'./src/data-schema.json',
+		'./src/**/*.{webp,png}',
+	]).pipe(changed(
 		'./tmp',
 		{
 			hasChanged: changed.compareContents,
@@ -481,6 +484,7 @@ task('sync', () => {
 
 task('default', series(...[
 	parallel(...[
+		'sync-src',
 		'css',
 	]),
 	'html',

@@ -3,7 +3,7 @@ date: Last Modified
 layout: default
 ---
 {% for post in posts %}
-	<article>
+	<article itemscope itemtype="https://schema.org/BlogPosting">
 	{% if (post.image.length > 0 or 'youtube' === post.source) %}
 		{% if ('youtube' !== post.source) %}
 		<figure class="images-{{post.image.length}}">
@@ -15,18 +15,21 @@ layout: default
 				rel="noopener"
 				target="_blank"
 				href="https://www.reddit.com/{{post.id}}"
+				itemprop="url"
 			>
 		{% elif ('youtube' === post.source ) %}
 			<a
 				rel="noopener"
 				target="_blank"
 				href="{{post.url}}"
+				itemprop="url"
 			>
 		{% else %}
 			<a
 				rel="noopener"
 				target="_blank"
 				href="https://twitter.com/{{post.author}}/status/{{post.id}}"
+				itemprop="url"
 			>
 		{% endif %}
 		{% for image in post.image %}
@@ -38,6 +41,7 @@ layout: default
 						srcset="{{[post, image] | localImageSrcsetWebp}}"
 					>
 					<img
+						itemprop="image"
 						src="{{[post, image] | localImagePrefix}}-320.jpg"
 						width="{{[post, image] | localImageWidth}}"
 						height="{{[post, image] | localImageHeight}}"
@@ -57,6 +61,7 @@ layout: default
 						srcset="{{[post] | youtubeImageSrcsetWebp}}"
 					>
 					<img
+						itemprop="image"
 						src="{{[post] | youtubeImagePrefix}}-320.jpg"
 						width="{{[post] | youtubeImageWidth}}"
 						height="{{[post] | youtubeImageHeight}}"
@@ -74,7 +79,7 @@ layout: default
 					<tbody>
 						<tr>
 							<th scope="row">Title</th>
-							<td>{{post.title}}</td>
+							<td itemprop="headline">{{post.title}}</td>
 						</tr>
 						<tr>
 							<th scope="row">Source</th>
@@ -83,12 +88,13 @@ layout: default
 	{% if ('reddit' === post.source) %}
 						<tr>
 							<th scope="row">Author</th>
-							<td>
+							<td itemprop="author" itemscope itemtype="https://schema.org/Person">
 								<a
 									rel="noopener"
 									target="_blank"
 									href="https://www.reddit.com/user/{{post.author}}"
-								>u/{{post.author}}</a>
+									itemprop="url"
+								>u/<span itemprop="name">{{post.author}}</span></a>
 							</td>
 						</tr>
 						<tr>
@@ -98,18 +104,20 @@ layout: default
 									rel="noopener"
 									target="_blank"
 									href="https://www.reddit.com/{{post.id}}"
+									itemprop="url"
 								>{{post.id | pathSoftWrap}}</a>
 							</td>
 						</tr>
 	{% elif ('youtube' === post.source) %}
 						<tr>
 							<th scope="row">Author</th>
-							<td>
+							<td itemprop="author" itemscope itemtype="https://schema.org/Person">
 								<a
 									rel="noopener"
 									target="_blank"
 									href="https://youtube.com/channel/{{post.author.id}}"
-								>{{post.author.name}}</a>
+									itemprop="url"
+								><span itemprop="name">{{post.author.name}}</span></a>
 							</td>
 						</tr>
 						<tr>
@@ -119,18 +127,20 @@ layout: default
 									rel="noopener"
 									target="_blank"
 									href="{{post.url}}"
+									itemprop="url"
 								>{{post.url | pathSoftWrap}}</a>
 							</td>
 						</tr>
 	{% else %}
 						<tr>
 							<th scope="row">Author</th>
-							<td>
+							<td itemprop="author" itemscope itemtype="https://schema.org/Person">
 								<a
 									rel="noopener"
 									target="_blank"
 									href="https://twitter.com/{{post.author}}"
-								>@{{post.author}}</a>
+									itemprop="url"
+								>@<span itemprop="name">{{post.author}}</span></a>
 							</td>
 						</tr>
 						<tr>
@@ -140,6 +150,7 @@ layout: default
 									rel="noopener"
 									target="_blank"
 									href="https://twitter.com/{{post.author}}/status/{{post.id}}"
+									itemprop="url"
 								>{{post | twitterPathSoftWrap}}</a>
 							</td>
 						</tr>
@@ -147,6 +158,7 @@ layout: default
 						<tr>
 							<th scope="row">Date</th>
 							<td><time
+								itemprop="dateCreated"
 								datetime="{{post.date | postDate }}"
 							>{{post.date | postDateHuman }}</time></td>
 						</tr>

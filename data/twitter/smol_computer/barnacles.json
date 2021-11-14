@@ -5,8 +5,17 @@
 	"title": "floating barnacles, floating hog, embedded shroom",
 	"date": "2021-10-11T19:11",
 	"image": [
-		"https://pbs.twimg.com/media/FBb_yTzVEAMHa3i?format=jpg&name=large",
-		"https://pbs.twimg.com/media/FBb_yU-UYAIJrfW?format=jpg&name=large",
-		"https://pbs.twimg.com/media/FBb_yVHVkAQ_03S?format=jpg&name=large"
+		{
+			"src": "https://pbs.twimg.com/media/FBb_yTzVEAMHa3i?format=jpg&name=large",
+			"alt": "Floating barnacles viewed from below to show a disconnect between the surface of a boulder & the collection of barnacles."
+		},
+		{
+			"src": "https://pbs.twimg.com/media/FBb_yU-UYAIJrfW?format=jpg&name=large",
+			"alt": "Alien hog stuck up a tree."
+		},
+		{
+			"src": "https://pbs.twimg.com/media/FBb_yVHVkAQ_03S?format=jpg&name=large",
+			"alt": "Bacon Agaric partially embedded into a boulder, at night, highlighted via the flashlight."
+		}
 	]
 }

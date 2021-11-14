@@ -1,3 +1,7 @@
+export type PostImageComplex = {
+	src: string,
+	alt: string,
+};
 export type PostImage = string;
 
 export type PostSource = 'twitter'|'reddit'|'youtube';
@@ -11,14 +15,14 @@ export type Sourceable = {
 export type Post = Sourceable & {
 	title: string,
 	author: string,
-	image?:PostImage|PostImage[],
+	image?:PostImage|(PostImage|PostImageComplex)[],
 	via?: Sourceable & {
 		name:string,
 	},
 };
 
 export type PostPredictable = Post & {
-	image: PostImage[]
+	image: (PostImage|PostImageComplex)[]
 };
 
 export type PostPredictableYouTube = Post & {

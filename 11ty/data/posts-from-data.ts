@@ -3,6 +3,8 @@ import {
 } from 'luxon';
 import {
 	Post,
+	PostImage,
+	PostImageComplex,
 	PostPredictable,
 } from '../../types';
 
@@ -40,6 +42,8 @@ module.exports = async ():Promise<PostPredictable[]> => {
 		const result = data_schema(data);
 
 		if ( ! result) {
+			console.error(data);
+
 			throw data_schema.errors;
 		}
 
@@ -48,7 +52,7 @@ module.exports = async ():Promise<PostPredictable[]> => {
 		const post = require(filename) as Post;
 
 		if ('image' in post) {
-			const image:string|string[] = post.image;
+			const image:PostImage|(PostImage|PostImageComplex)[] = post.image;
 
 			if ('string' === typeof(image)) {
 				post.image = [image];
@@ -56,7 +60,7 @@ module.exports = async ():Promise<PostPredictable[]> => {
 				post.image = image;
 			}
 		} else {
-			post.image = [] as string[];
+			post.image = [] as (PostImage|PostImageComplex)[];
 		}
 
 		return post as PostPredictable;

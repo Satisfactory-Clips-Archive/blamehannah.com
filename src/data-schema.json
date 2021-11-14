@@ -65,6 +65,22 @@
 				}
 			]
 		},
+		"complex_image": {
+			"type": "object",
+			"required": [
+				"src",
+				"alt"
+			],
+			"properties": {
+				"src": {
+					"oneOf": [
+						{"$ref": "#/definitions/simple_image"},
+						{"$ref": "#/definitions/twitter_image"}
+					]
+				},
+				"alt": {"type": "string"}
+			}
+		},
 		"simple_image": {
 			"type": "string",
 			"pattern": "^https:\/\/.+\\.(jpg|png|webp)$"
@@ -137,6 +153,7 @@
 							"uniqueItems": true,
 							"items": {
 								"oneOf": [
+									{"$ref": "#/definitions/complex_image"},
 									{"$ref": "#/definitions/simple_image"},
 									{"$ref": "#/definitions/twitter_image"}
 								]

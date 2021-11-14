@@ -4,7 +4,12 @@
 	"id": "/r/SatisfactoryGame/comments/pvcspv/cursed_nut/",
 	"title": "cursed_nut",
 	"date": "2021-09-25T18:36:51+00:00",
-	"image": "https://i.redd.it/dhnb7wsj1pp71.png",
+	"image": [
+		{
+			"src": "https://i.redd.it/dhnb7wsj1pp71.png",
+			"alt": "A floating Bery Nut bush in the \"Dune Desert\" Biome of Satisfactory, viewed from below so that the floating is clearly visible."
+		}
+	],
 	"via": {
 		"name": "jembawls",
 		"source": "twitter",

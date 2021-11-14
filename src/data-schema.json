@@ -87,7 +87,7 @@
 		},
 		"twitter_image": {
 			"type": "string",
-			"pattern": "^https:\/\/pbs\\.twimg\\.com/media\/[^\\?]+\\?format=jpg&name=large"
+			"pattern": "^https:\/\/pbs\\.twimg\\.com/media\/[^\\?]+\\?format=jpg&name=(?:large|4096x4096)"
 		}
 	},
 	"oneOf": [
@@ -126,6 +126,7 @@
 				"source",
 				"id",
 				"title",
+				"image",
 				"date"
 			],
 			"type": "object",

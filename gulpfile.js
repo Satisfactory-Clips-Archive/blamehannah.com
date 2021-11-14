@@ -480,7 +480,6 @@ task('sync', () => {
 });
 
 task('default', series(...[
-	'sync-images',
 	parallel(...[
 		'css',
 	]),

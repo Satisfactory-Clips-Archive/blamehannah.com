@@ -29,6 +29,9 @@ const postcss_plugins = {
 const cssnano = require('cssnano');
 const newer = require('gulp-newer');
 const brotli = require('gulp-brotli');
+const rev = require('gulp-rev');
+const rev_replace = require('gulp-rev-replace');
+const rename = require('gulp-rename');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -320,7 +323,7 @@ task('sync-images', async (cb) => {
 		})) {
 			const [preprocess, encode_rules] = config;
 
-			const resized = `${__dirname}/tmp/img/${file}-${
+			const resized = `${__dirname}/src/img/${file}-${
 				'height' in preprocess.resize
 					? `${preprocess.resize.width}x${preprocess.resize.height}`
 					: `${preprocess.resize.width}`
@@ -412,6 +415,10 @@ task('sync-images', async (cb) => {
 
 task('html', () => {
 	return src('./src/**/*.html').pipe(
+		rev_replace({
+			manifest: src('./tmp/asset.manifest'),
+		})
+	).pipe(
 		htmlmin({
 			collapseInlineTagWhitespace: false,
 			collapseWhitespace: true,
@@ -428,7 +435,7 @@ task('html', () => {
 });
 
 task('css', () => {
-	return src('./src/**/*.css').pipe(
+	return src('./src/**/*.postcss').pipe(
 		postcss([
 			postcss_plugins.import(),
 			postcss_plugins.nested(),
@@ -438,7 +445,11 @@ task('css', () => {
 			}),
 		])
 	).pipe(
-		dest('./tmp/')
+		rename({
+			extname: '.css'
+		})
+	).pipe(
+		dest('./src/')
 	)
 });
 
@@ -452,6 +463,18 @@ task('sync-src', () => {
 			hasChanged: changed.compareContents,
 		}
 	)).pipe(dest('./tmp/'));
+});
+
+task('rev', () => {
+	return src('./src/**/*.{css,jpg,png,webp}').pipe(
+		rev()
+	).pipe(
+		dest('./tmp/')
+	).pipe(
+		rev.manifest('./asset.manifest')
+	).pipe(
+		dest('./tmp/')
+	)
 });
 
 task('brotli', () => {
@@ -487,6 +510,7 @@ task('default', series(...[
 		'sync-src',
 		'css',
 	]),
+	'rev',
 	'html',
 	'brotli',
 	'sync',

@@ -5,11 +5,9 @@
 /cache/**/*.mkv
 /cache/**/*.mp4
 /cache/**/*.webm
-/tmp/**/*.webp
-/tmp/**/*.jpg
-/tmp/**/*.png
-/tmp/**/*.html
-/tmp/**/*.css
-/tmp/**/*.json
-/tmp/**/*.br
+/tmp/
+/src/img/*/**/*.jpg
+/src/img/*/**/*.png
+/src/img/*/**/*.webp
+/src/css/style.css
 /dist/

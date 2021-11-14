@@ -47,7 +47,7 @@ async function localImageSrcset(post:PostPredictable|PostPredictableYouTube, ima
 	for (let dim of [320, 375, 425, 768]) {
 		const x1 = `/img/${file}-${dim}.webp`;
 
-		if (dim <= width && await exists(`${__dirname}/../tmp/${x1}`)) {
+		if (dim <= width && await exists(`${__dirname}/../src/${x1}`)) {
 			srcset.push(`${x1} ${dim}w`);
 		}
 	}
@@ -64,7 +64,7 @@ async function localImageDimensions(post:PostPredictable|PostPredictableYouTube,
 	let src:string|undefined;
 
 	for (let dim of [320, 375, 425, 768]) {
-		const x1 = `${__dirname}/../tmp/img/${file}-${dim}.webp`;
+		const x1 = `${__dirname}/../src/img/${file}-${dim}.webp`;
 
 		if (dim <= width && await exists(x1)) {
 			src = x1;

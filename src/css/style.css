@@ -130,3 +130,45 @@ figcaption
 {
 	padding: 1em ;
 }
+
+body > header,
+body > footer
+{
+    height: 101vh ;
+    display: flex ;
+    flex-direction: column ;
+    justify-content: center ;
+    align-items: center ;
+    font-size: 4vmin ;
+	cursor: s-resize ;
+
+	> figure
+	{
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+
+		&:not(.images-1)
+		{
+			a
+			{
+				display: inline-block ;
+			}
+		}
+
+		> figcaption
+		{
+			font-size: 1rem ;
+		}
+	}
+}
+
+body > footer
+{
+	font-size: 1rem ;
+
+	a
+	{
+		display: inline-block ;
+	}
+}

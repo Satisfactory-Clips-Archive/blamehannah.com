@@ -2,6 +2,7 @@
 
 ## 2021-11-14
 - expand support for youtube sources
+- fleshed out layout & content
 
 ## 2021-11-13
 - fixed line endings

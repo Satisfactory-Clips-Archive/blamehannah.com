@@ -65,7 +65,10 @@ task('sync-images', async (cb) => {
 		if (
 			'youtube' === maybe.source
 			&& 'id' in maybe
-			&& /^yt-[^,]+,[^,]*,[^,]*$/.test(maybe.id)
+			&& (
+				/^yt-[^,]+,[^,]*,[^,]*$/.test(maybe.id)
+				|| /^yt-[^,]+$/.test(maybe.id)
+			)
 			&& (video = await glob(`${__dirname}/cache/youtube/satisfactory-clips-archive/${maybe.id}.*`)).length > 0
 		) {
 			posts_with_videos.push([maybe, video[0]]);

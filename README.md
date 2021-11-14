@@ -1,5 +1,8 @@
 # changelog
 
+## 2021-11-14
+- expand support for youtube sources
+
 ## 2021-11-13
 - fixed line endings
 - adding support for youtube sources

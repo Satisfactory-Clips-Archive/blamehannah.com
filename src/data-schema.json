@@ -145,18 +145,12 @@
 				},
 				"image": {
 					"oneOf": [
-						{"$ref": "#/definitions/simple_image"},
-						{"$ref": "#/definitions/twitter_image"},
 						{
 							"minItems": 1,
 							"type": "array",
 							"uniqueItems": true,
 							"items": {
-								"oneOf": [
-									{"$ref": "#/definitions/complex_image"},
-									{"$ref": "#/definitions/simple_image"},
-									{"$ref": "#/definitions/twitter_image"}
-								]
+								"$ref": "#/definitions/complex_image"
 							}
 						}
 					]

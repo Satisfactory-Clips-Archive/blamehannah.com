@@ -79,7 +79,7 @@ task('sync-images', async (cb) => {
 
 	for (let post of posts_with_images) {
 		for (let post_image of post.image) {
-			const hash = createHash('sha256').update(Object.keys(post_image).includes('src') ? post_image.src : post_image).digest('hex');
+			const hash = createHash('sha256').update(post_image.src).digest('hex');
 			const file = `${__dirname}/cache/${post.source}/${hash}`;
 			const filename = `${file}.png`;
 			const metafile = `${file}.json`;
@@ -88,7 +88,7 @@ task('sync-images', async (cb) => {
 				continue;
 			}
 
-			const buffer = await (await fetch(Object.keys(post_image).includes('src') ? post_image.src : post_image)).buffer();
+			const buffer = await (await fetch(post_image.src)).buffer();
 
 			const image = imagePool.ingestImage(buffer);
 
@@ -96,7 +96,7 @@ task('sync-images', async (cb) => {
 
 			await writeFile(metafile, JSON.stringify(
 				{
-					url: Object.keys(post_image).includes('src') ? post_image.src : post_image,
+					url: post_image.src,
 					width: meta.bitmap.width,
 					height: meta.bitmap.height,
 				},
@@ -383,7 +383,7 @@ task('sync-images', async (cb) => {
 
 	for (let post of posts_with_images) {
 		for (let post_image of post.image) {
-			const hash = createHash('sha256').update(Object.keys(post_image).includes('src') ? post_image.src : post_image).digest('hex');
+			const hash = createHash('sha256').update(post_image.src).digest('hex');
 			const file = `${post.source}/${hash}`;
 			const cache_file = `${__dirname}/cache/${file}.png`;
 			const meta = require(`${__dirname}/cache/${file}.json`);

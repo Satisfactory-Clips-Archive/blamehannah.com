@@ -44,7 +44,7 @@ layout: default
 						srcset="{{[post, image] | localImageSrcsetJpeg}}"
 						loading="lazy"
 						decoding="async"
-						alt="{{[post, image] | post_image_alt}}"
+						alt="{{image.alt}}"
 					>
 				</picture>
 		{% endfor %}

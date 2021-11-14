@@ -187,20 +187,6 @@ module.exports = (e) => {
 		);
 	});
 
-	e.addFilter(
-		'post_image_alt',
-		(
-			arg:[
-				PostPredictable|PostPredictableYouTube,
-				PostImageComplex,
-			]
-		) : string => {
-			const [post, image] = arg;
-
-			return image.alt;
-		}
-	);
-
 	return {
 		dir: {
 			input: './11ty/input/',

@@ -1,5 +1,8 @@
 # changelog
 
+## 2021-11-15
+- fixed a bug caused by incorrect pool usage
+
 ## 2021-11-14
 - expand support for youtube sources
 - fleshed out layout & content

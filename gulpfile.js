@@ -51,8 +51,6 @@ task('sync-images', async (cb) => {
 		default:fetch,
 	} = await import('node-fetch');
 
-	const imagePool = new ImagePool();
-
 	const posts = (
 		await require('./11ty/data/posts.js')()
 	);
@@ -93,6 +91,8 @@ task('sync-images', async (cb) => {
 
 			const buffer = await (await fetch(post_image.src)).buffer();
 
+			const imagePool = new ImagePool();
+
 			const image = imagePool.ingestImage(buffer);
 
 			const meta = await image.decoded;
@@ -114,6 +114,8 @@ task('sync-images', async (cb) => {
 			});
 
 			await writeFile(filename, (await image.encodedWith.oxipng).binary);
+
+			await imagePool.close();
 		}
 	}
 
@@ -157,6 +159,8 @@ task('sync-images', async (cb) => {
 			);
 		});
 
+		const imagePool = new ImagePool();
+
 		const image = imagePool.ingestImage(filename);
 
 		const meta = await image.decoded;
@@ -178,6 +182,8 @@ task('sync-images', async (cb) => {
 		});
 
 		await writeFile(filename, (await image.encodedWith.oxipng).binary);
+
+		await imagePool.close();
 	}
 
 	const images = [
@@ -349,6 +355,8 @@ task('sync-images', async (cb) => {
 				continue;
 			}
 
+			const imagePool = new ImagePool();
+
 			const image = imagePool.ingestImage(cache_file);
 
 			await image.decoded;
@@ -381,6 +389,8 @@ task('sync-images', async (cb) => {
 			}
 
 			await Promise.all(write);
+
+			await imagePool.close();
 		}
 	}
 
@@ -407,8 +417,6 @@ task('sync-images', async (cb) => {
 
 		await handle_images(`${post.source}/${hash}`, filename, meta);
 	}
-
-	await imagePool.close();
 
 	cb();
 });

@@ -424,7 +424,7 @@ task('sync-images', async (cb) => {
 task('html', () => {
 	return src('./src/**/*.html').pipe(
 		rev_replace({
-			manifest: src('./tmp/asset.manifest'),
+			manifest: src('./rev-tmp/asset.manifest'),
 		})
 	).pipe(
 		htmlmin({
@@ -437,6 +437,13 @@ task('html', () => {
 			removeComments: true,
 			useShortDoctype: true,
 		})
+	).pipe(
+		changed(
+			'./tmp',
+			{
+				hasChanged: changed.compareContents,
+			}
+		)
 	).pipe(
 		dest('./tmp/')
 	)
@@ -464,7 +471,6 @@ task('css', () => {
 task('sync-src', () => {
 	return src([
 		'./src/data-schema.json',
-		'./src/**/*.{webp,png}',
 	]).pipe(changed(
 		'./tmp',
 		{
@@ -477,12 +483,23 @@ task('rev', () => {
 	return src('./src/**/*.{css,jpg,png,webp}').pipe(
 		rev()
 	).pipe(
-		dest('./tmp/')
-	).pipe(
 		rev.manifest('./asset.manifest')
 	).pipe(
-		dest('./tmp/')
+		dest('./rev-tmp/')
 	)
+});
+
+task('rev-sync', () => {
+	return src('./rev-tmp/**/*.{css,jpg,png,webp}').pipe(
+		changed(
+			'./tmp',
+			{
+				hasChanged: changed.compareContents,
+			}
+		)
+	).pipe(
+		dest('./tmp/')
+	);
 });
 
 task('brotli', () => {
@@ -503,10 +520,7 @@ task('brotli', () => {
 task('sync', () => {
 	return src('./tmp/**/*.{html,png,webp,jpg,json,css,br}').pipe(
 		changed(
-			'./dist/',
-			{
-				hasChagned: changed.compareContents,
-			}
+			'./dist/'
 		)
 	).pipe(
 		dest('./dist/')
@@ -519,6 +533,7 @@ task('default', series(...[
 		'css',
 	]),
 	'rev',
+	'rev-sync',
 	'html',
 	'brotli',
 	'sync',

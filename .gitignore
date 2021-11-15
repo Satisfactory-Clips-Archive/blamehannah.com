@@ -11,3 +11,4 @@
 /src/img/*/**/*.webp
 /src/css/style.css
 /dist/
+/rev-tmp/

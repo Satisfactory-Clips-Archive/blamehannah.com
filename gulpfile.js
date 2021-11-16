@@ -32,6 +32,7 @@ const brotli = require('gulp-brotli');
 const rev = require('gulp-rev');
 const rev_replace = require('gulp-rev-replace');
 const rename = require('gulp-rename');
+const replace = require('gulp-replace');
 const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 ffmpeg.setFfmpegPath(ffmpegPath);
@@ -437,6 +438,8 @@ task('html', () => {
 			removeComments: true,
 			useShortDoctype: true,
 		})
+	).pipe(
+		replace(/\.\/img\//g, 'https://blamehannah.com/img/')
 	).pipe(
 		changed(
 			'./tmp',

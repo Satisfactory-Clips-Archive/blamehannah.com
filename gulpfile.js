@@ -486,6 +486,8 @@ task('rev', () => {
 	return src('./src/**/*.{css,jpg,png,webp}').pipe(
 		rev()
 	).pipe(
+		dest('./rev-tmp/')
+	).pipe(
 		rev.manifest('./asset.manifest')
 	).pipe(
 		dest('./rev-tmp/')

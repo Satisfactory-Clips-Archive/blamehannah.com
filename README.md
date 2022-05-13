@@ -1,5 +1,8 @@
 # changelog
 
+## 2022-05-13
+- added support for youtube collisions
+
 ## 2021-11-15
 - fixed a bug caused by incorrect pool usage
 

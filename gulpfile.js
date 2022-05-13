@@ -67,6 +67,26 @@ task('sync-images', async (cb) => {
 	for (let maybe of posts) {
 		let video;
 		if (
+			(
+				'youtube' === maybe.source
+				&& 'id' in maybe
+				&& 'videos' in maybe
+				&& (
+					/^yt-[^,]+,[^,]*,[^,]*$/.test(maybe.id)
+					|| /^yt-[^,]+$/.test(maybe.id)
+				)
+				&& (video = await glob(`${__dirname}/cache/youtube/satisfactory-clips-archive/${maybe.id}.*`)).length > 0
+			)
+		) {
+			maybe.videos.forEach((post_video) => {
+				posts_with_videos.push([
+					Object.assign({}, maybe, {
+						screenshot_timestamp: post_video.screenshot_timestamp,
+					}),
+					video[0],
+				]);
+			});
+		} else if (
 			'youtube' === maybe.source
 			&& 'id' in maybe
 			&& (

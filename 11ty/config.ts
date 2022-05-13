@@ -31,9 +31,15 @@ function meta(post:PostPredictable|PostPredictableYouTube, image:PostImageComple
 	width: number,
 	height: number,
 } {
+	try {
 	return require(`${__dirname}/../cache/${post.source}/${
 		createHash('sha256').update(image.src).digest('hex')
 	}.json`);
+	} catch (err) {
+		console.error([post, image]);
+
+		throw err;
+	}
 }
 
 async function localImageSrcset(post:PostPredictable|PostPredictableYouTube, image:PostImageComplex, format:'webp'|'jpg') : Promise<string> {
@@ -105,9 +111,21 @@ module.exports = (e) => {
 			createHash('sha256').update(arg[1].src).digest('hex')
 		}`;
 	});
-	e.addFilter('youtubeImagePrefix', (arg:[PostPredictableYouTube]) => {
+	e.addFilter(
+		'youtubeImagePrefix',
+		(
+			arg:[PostPredictableYouTube, any]
+		) => {
 		const hash = createHash('sha256').update(
-			`${arg[0].id}@${arg[0].screenshot_timestamp}`
+			`${
+				arg[0].id
+			}@${
+				arg[
+					(arg[1] && ('screenshot_timestamp' in arg[1]))
+						? 1
+						: 0
+				].screenshot_timestamp
+			}`
 		).digest('hex');
 		return `/img/${arg[0].source}/${hash}`;
 	});
@@ -129,16 +147,50 @@ module.exports = (e) => {
 	);
 	e.addNunjucksAsyncFilter(
 		'youtubeImageWidth',
-		(arg:[PostPredictableYouTube], callback:(any, number) => any) : void => {
-			localImageDimensions(arg[0], {alt: '', src: `${arg[0].id}@${arg[0].screenshot_timestamp}`}).then((dim) => {
+		(
+			arg:[PostPredictableYouTube, any],
+			callback:(any, number) => any
+		) : void => {
+			localImageDimensions(
+				arg[0],
+				{
+					alt: '',
+					src: `${
+						arg[0].id
+					}@${
+						arg[
+							(arg[1] && ('screenshot_timestamp' in arg[1]))
+								? 1
+								: 0
+						].screenshot_timestamp
+					}`,
+				}
+			).then((dim) => {
 				callback(null, dim[0]);
 			});
 		}
 	);
 	e.addNunjucksAsyncFilter(
 		'youtubeImageHeight',
-		(arg:[PostPredictableYouTube], callback:(any, number) => any) : void => {
-			localImageDimensions(arg[0], {alt: '', src: `${arg[0].id}@${arg[0].screenshot_timestamp}`}).then((dim) => {
+		(
+			arg:[PostPredictableYouTube, any],
+			callback:(any, number) => any
+		) : void => {
+			localImageDimensions(
+				arg[0],
+				{
+					alt: '',
+					src: `${
+						arg[0].id
+					}@${
+						arg[
+							(arg[1] && ('screenshot_timestamp' in arg[1]))
+								? 1
+								: 0
+						].screenshot_timestamp
+					}`,
+				}
+			).then((dim) => {
 				callback(null, dim[1]);
 			});
 		}
@@ -153,8 +205,26 @@ module.exports = (e) => {
 	);
 	e.addNunjucksAsyncFilter(
 		'youtubeImageSrcsetWebp',
-		(arg:[PostPredictableYouTube], callback:(any, string) => any) : void => {
-			localImageSrcset(arg[0], {alt: '', src: `${arg[0].id}@${arg[0].screenshot_timestamp}`}, 'webp').then((src) => {
+		(
+			arg:[PostPredictableYouTube, any],
+			callback:(any, string) => any
+		) : void => {
+			localImageSrcset(
+				arg[0],
+				{
+					alt: '',
+					src: `${
+						arg[0].id
+					}@${
+						arg[
+							(arg[1] && ('screenshot_timestamp' in arg[1]))
+								? 1
+								: 0
+						].screenshot_timestamp
+					}`,
+				},
+				'webp'
+			).then((src) => {
 				callback(null, src)
 			});
 		}
@@ -169,8 +239,26 @@ module.exports = (e) => {
 	);
 	e.addNunjucksAsyncFilter(
 		'youtubeImageSrcsetJpeg',
-		(arg:[PostPredictableYouTube], callback:(any, string) => any) : void => {
-			localImageSrcset(arg[0], {alt: '', src: `${arg[0].id}@${arg[0].screenshot_timestamp}`}, 'jpg').then((src) => {
+		(
+			arg:[PostPredictableYouTube, any],
+			callback:(any, string) => any
+		) : void => {
+			localImageSrcset(
+				arg[0],
+				{
+					alt: '',
+					src: `${
+						arg[0].id
+					}@${
+						arg[
+							(arg[1] && ('screenshot_timestamp' in arg[1]))
+								? 1
+								: 0
+						].screenshot_timestamp
+					}`,
+				},
+				'jpg'
+			).then((src) => {
 				callback(null, src)
 			});
 		}

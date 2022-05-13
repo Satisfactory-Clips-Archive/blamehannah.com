@@ -1,0 +1,37 @@
+{
+	"author": {
+		"id": "UCnXVz_l-_r_sLXNe1ESDhHA",
+		"name": "Coffee Stain"
+	},
+	"source": "youtube",
+	"id": "yt-FqhboAjAiYY",
+	"date": "2022-05-09",
+	"title": "Hannah talks Spire Coast",
+	"via": {
+		"name": "Satisfactory Clips Archive",
+		"source": "youtube",
+		"id": "UCJamaIaFLyef0HjZ2LBEz1A",
+		"date": "2022-05-09"
+	},
+	"url": "https://youtu.be/FqhboAjAiYY",
+	"videos": [
+		{
+			"id": "yt-FqhboAjAiYY",
+			"screenshot_timestamp": 616.35,
+			"alt": "This is the Valhalla of Floating Rocks",
+			"url": "https://youtu.be/FqhboAjAiYY?t=616.35"
+		},
+		{
+			"id": "yt-FqhboAjAiYY",
+			"screenshot_timestamp": 2597,
+			"alt": "Q&A: Are floating rocks part of the 80%?",
+			"url": "https://youtu.be/FqhboAjAiYY?t=2597"
+		},
+		{
+			"id": "yt-FqhboAjAiYY",
+			"screenshot_timestamp": 2832,
+			"alt": "Floating rocks, yo",
+			"url": "https://youtu.be/FqhboAjAiYY?t=2832"
+		}
+	]
+}

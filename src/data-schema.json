@@ -121,6 +121,54 @@
 			"additionalProperties": false
 		},
 		{
+			"type": "object",
+			"required": [
+				"author",
+				"source",
+				"id",
+				"title",
+				"date",
+				"via",
+				"url",
+				"videos"
+			],
+			"properties": {
+				"author": {"$ref": "#/definitions/author"},
+				"source": {
+					"const": "youtube"
+				},
+				"id": {"$ref": "#/definitions/id"},
+				"title": {"$ref": "#/definitions/title"},
+				"date": {"$ref": "#/definitions/date"},
+				"via": {"$ref": "#/definitions/via"},
+				"url": {"$ref": "#/definitions/url"},
+				"videos": {
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": {
+						"type": "object",
+						"required": [
+							"id",
+							"screenshot_timestamp",
+							"alt",
+							"url"
+						],
+						"properties": {
+							"id": {"$ref": "#/definitions/id"},
+							"screenshot_timestamp": {
+								"type": "number"
+							},
+							"alt": {"type": "string"},
+							"url": {"$ref": "#/definitions/url"}
+						},
+						"additionalProperties": false
+					}
+				}
+			},
+			"additionalProperties": false
+		},
+		{
 			"required": [
 				"author",
 				"source",

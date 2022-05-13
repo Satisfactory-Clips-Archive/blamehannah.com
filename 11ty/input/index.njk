@@ -7,6 +7,9 @@ layout: default
 	{% if (post.image.length > 0 or 'youtube' === post.source) %}
 		{% if ('youtube' !== post.source) %}
 		<figure class="images-{{post.image.length}}">
+		{% elif ('videos' in post) %}
+		<figure class="separates images-{{post.videos.length}}">
+			<section>
 		{% else %}
 		<figure class="images-1">
 		{% endif %}
@@ -17,14 +20,14 @@ layout: default
 				href="https://www.reddit.com/{{post.id}}"
 				itemprop="url"
 			>
-		{% elif ('youtube' === post.source ) %}
+		{% elif ('youtube' === post.source ) and not ('videos' in post) %}
 			<a
 				rel="noopener"
 				target="_blank"
 				href="{{post.url}}"
 				itemprop="url"
 			>
-		{% else %}
+		{% elif ('twitter' === post.source) %}
 			<a
 				rel="noopener"
 				target="_blank"
@@ -52,7 +55,7 @@ layout: default
 					>
 				</picture>
 		{% endfor %}
-		{% if 'youtube' === post.source %}
+		{% if ('youtube' === post.source) and not ('videos' in post) %}
 				<picture
 					style="background-image:url({{[post, image] | youtubeImagePrefix}}-16x16.jpg)"
 				>
@@ -71,8 +74,39 @@ layout: default
 						alt="{{post.alt}}"
 					>
 				</picture>
+		{% elif ('youtube' === post.source) %}
+			{% for video in post.videos %}
+				<a
+					href="{{video.url}}"
+					rel="noopener"
+					target="_blank"
+				>
+					<picture
+						style="background-image:url({{[post, video] | youtubeImagePrefix}}-16x16.jpg)"
+					>
+						<source
+							type="image/webp"
+							srcset="{{[post, video] | youtubeImageSrcsetWebp}}"
+						>
+						<img
+							itemprop="image"
+							src="{{[post, video] | youtubeImagePrefix}}-320.jpg"
+							width="{{[post, video] | youtubeImageWidth}}"
+							height="{{[post, video] | youtubeImageHeight}}"
+							srcset="{{[post, video] | youtubeImageSrcsetJpeg}}"
+							loading="lazy"
+							decoding="async"
+							alt="{{video.alt}}"
+						>
+					</picture>
+				</a>
+			{% endfor %}
 		{% endif %}
+		{% if not ('videos' in post) %}
 			</a>
+		{% else %}
+			</section>
+		{% endif %}
 			<figcaption>
 	{% endif %}
 				<table>
@@ -131,7 +165,7 @@ layout: default
 								>{{post.url | pathSoftWrap}}</a>
 							</td>
 						</tr>
-	{% else %}
+	{% elif ('twitter' === post.source) %}
 						<tr>
 							<th scope="row">Author</th>
 							<td itemprop="author" itemscope itemtype="https://schema.org/Person">

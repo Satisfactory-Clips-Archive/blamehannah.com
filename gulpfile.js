@@ -110,6 +110,8 @@ task('sync-images', async (cb) => {
 				continue;
 			}
 
+			console.log(`grabbing ${post_image.src}`);
+
 			const buffer = await (await fetch(post_image.src)).buffer();
 
 			const imagePool = new ImagePool();
@@ -117,6 +119,8 @@ task('sync-images', async (cb) => {
 			const image = imagePool.ingestImage(buffer);
 
 			const meta = await image.decoded;
+
+			console.log(`writing ${metafile}`);
 
 			await writeFile(metafile, JSON.stringify(
 				{
@@ -185,6 +189,8 @@ task('sync-images', async (cb) => {
 		const image = imagePool.ingestImage(filename);
 
 		const meta = await image.decoded;
+
+		console.log(`writing ${metafile}`);
 
 		await writeFile(metafile, JSON.stringify(
 			{

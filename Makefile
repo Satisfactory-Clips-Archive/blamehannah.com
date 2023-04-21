@@ -15,7 +15,15 @@ audit-fix:
 		satisfactory-clips-archive/blamehannah:node-latest \
 		npm audit fix
 
-sync-images:
+.PHONY: yt-dlp
+yt-dlp:
+	docker run --rm \
+		-w /var/www \
+		-v $(shell pwd)/:/var/www \
+		satisfactory-clips-archive/blamehannah:node-latest \
+		./node_modules/.bin/gulp yt-dlp
+
+sync-images: yt-dlp
 	docker run --rm \
 		-w /var/www \
 		-v $(shell pwd)/:/var/www \

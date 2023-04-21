@@ -46,6 +46,51 @@ const [
 ];
 const glob = promisify(require('glob'));
 
+task('yt-dlp', async (cb) => {
+	const {default:YTDlpWrap} = require('yt-dlp-wrap');
+	const {path:ffmpegPath} = require('@ffmpeg-installer/ffmpeg');
+	const ffmpeg = require('fluent-ffmpeg');
+
+	ffmpeg.setFfmpegPath(ffmpegPath);
+
+	if ( ! await exists(`${__dirname}/yt-dlp`)) {
+		await YTDlpWrap.downloadFromGithub();
+	}
+
+	const ytdlp = new YTDlpWrap();
+
+	ytdlp.setBinaryPath(`${__dirname}/yt-dlp`);
+	console.log(ytdlp.getBinaryPath());
+
+	for (const post of (await require('./11ty/data/posts.js')()).filter((maybe) => {
+		return maybe.id.startsWith('yt-');
+	})) {
+		const video_id = post.id.split(',')[0];
+
+		const matches = await glob(`${__dirname}/cache/youtube/satisfactory-clips-archive/${video_id}.*`);
+
+		if ( ! matches.length) {
+			const filepath = `${__dirname}/cache/youtube/satisfactory-clips-archive/${video_id}.mp4`;
+
+			await new Promise((yup, nope) => {
+				ytdlp.exec([
+					`https://youtube.com/watch?v=${video_id.replace(/^yt-/, '')}`,
+					'-f',
+					'best',
+					'-o',
+					filepath,
+				])
+					.on('progress', (progress) => {
+						console.log(`\r${video_id} downloading: ${progress.percent}`);
+					})
+					.on('error', nope)
+					.on('close', yup);
+			});
+		}
+	}
+
+	cb();
+});
 
 task('sync-images', async (cb) => {
 	const {
@@ -67,6 +112,15 @@ task('sync-images', async (cb) => {
 	for (let maybe of posts) {
 		let video;
 		if (
+			'youtube' === maybe.source
+			&& 'id' in maybe
+			&& (
+				/^yt-[^,]+,[^,]*,[^,]*$/.test(maybe.id)
+			)
+			&& (video = await glob(`${__dirname}/cache/youtube/satisfactory-clips-archive/${maybe.id.split(',')[0]}.*`)).length > 0
+		) {
+			posts_with_videos.push([maybe, video[0]]);
+		} else if (
 			(
 				'youtube' === maybe.source
 				&& 'id' in maybe
@@ -96,6 +150,10 @@ task('sync-images', async (cb) => {
 			&& (video = await glob(`${__dirname}/cache/youtube/satisfactory-clips-archive/${maybe.id}.*`)).length > 0
 		) {
 			posts_with_videos.push([maybe, video[0]]);
+		} else if (maybe.id.startsWith('yt-')) {
+			console.log(maybe);
+		} else {
+			console.log(`skipping ${maybe.id}`);
 		}
 	}
 
@@ -154,7 +212,7 @@ task('sync-images', async (cb) => {
 			start = parseFloat(start);
 		}
 
-		const offset_start = post.screenshot_timestamp - start;
+		let offset_start = post.screenshot_timestamp;
 		const hash = createHash('sha256').update(
 			`${post.id}@${post.screenshot_timestamp}`
 		).digest('hex');
@@ -163,11 +221,38 @@ task('sync-images', async (cb) => {
 		const filename = `${file}.png`;
 		const metafile = `${file}.json`;
 
+		console.log(post.id, start, filename);
+
 		if (await exists(filename) && await exists(metafile)) {
 			continue;
 		}
 
 		console.log(`generating video screenshot of ${post.id}`);
+
+		/*
+		const fps = await new Promise((yup, nope) => {
+			ffmpeg(video).on('codecData', (data) => {
+				if ( ! ('video_details' in data)) {
+					nope(new Error(`no video_details in ${post.id} video source!`));
+				} else {
+					const maybe_fps = data.video_details.filter((maybe) => {
+						return /^\d+(?:\.\d+)? fps$/.test(maybe);
+					});
+
+					if ( ! maybe_fps.length) {
+						console.error(data.video_details);
+						nope(new Error(`no fps found in video_details for ${post.id} video source!`));
+					} else {
+						yup(parseFloat(maybe_fps[0].split(' ')[0]));
+					}
+				}
+			}).on('error', nope).addOption('-f', 'null').seekInput(0).frames(1).output('/dev/null').run();
+		});
+
+		const spf = 1 / fps;
+
+		console.log(post.id, fps, spf, offset_start, offset_start - (offset_start % spf), post.screenshot_timestamp, start);
+		*/
 
 		await new Promise((yup, nope) => {
 			ffmpeg(video).seekInput(offset_start).frames(1).on('end', yup).on('error', nope).on('strderr', nope).on(
